@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Home - TSA</title>
+    <link rel="stylesheet" href="/templates/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/custom.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+
+<body style="background-color: #008ed6;background-image: url(&quot;/static/images/gradient.png&quot;);margin: auto;background-size: cover;background-repeat: no-repeat;">
+    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark navbar-custom">
+        <div class="container"><a class="navbar-brand" href="#">Twitter sentiment analysis</a><button data-toggle="collapse" class="navbar-toggler" data-target="#navbarResponsive"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item" role="presentation"></li>
+                    <li class="nav-item" role="presentation"></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="masthead text-center text-white" style="background-image: url(&quot;/static/images/sentiment.png&quot;);background-size: cover;margin:0px;height: 658px;padding: 145px;">
+        <div class="masthead-content">
+            <div class="container">
+                <h1 class="masthead-heading mb-0" style="font-size: 45px;background-color: rgba(0,0,0,0.72);">How has the view of Wuhan/China changed over the span of the current pandemic?</h1><a style="background-color: rgb(214, 4, 120); padding: 30px;margin: 18px;width: 237px;font-size: 21px;" class="btn btn-primary btn-xl rounded-pill mt-5" role="button" href="#">ANALYZE</a>
+                <h2
+                    class="masthead-subheading mb-0" style="padding: 12px;background-color: rgba(0,0,0,0.72);height: -15px;width: 690px;margin: auto;">About The Project&nbsp;<br>↓<br></h2>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="/static/images/trends.png"></div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5">
+                        <h2 class="display-4" style="margin: auto;color: rgb(255,255,255);text-align: center;">&nbsp;Topic Selection</h2>
+                        <p style="background-color: rgba(0,0,0,0.72);color: #ffffff;font-size: 22px;text-align: center;"><strong>The Idea is to gather tweets from Twitter related to China/Wuhan and the Corona Virus. Our Analysis wil determine whether such tweets are positive or negative.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="/static/images/datacollection.png"></div>
+                </div>
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5">
+                        <h2 class="display-4" style="text-align: center; width: 472px;color: rgb(255,255,255);">Dataset Collection</h2>
+                        <p style="color: rgb(255,255,255);background-color: rgba(0,0,0,0.72);font-size: 22px;text-align: center;"><strong>As mentioned, the data collected from the internet will be tweets from Twitter. This data will come from relevant tweets centered upon topics from hashtags such as: #China #Wuhan #CoronaVirus #COVID19</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="p-5"><img class="rounded-circle img-fluid" src="/static/images/implement.png"></div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="p-5">
+                        <h2 class="display-4" style="text-align: center; color: rgb(255,255,255);">Implementation</h2>
+                        <p style="background-color: rgba(0,0,0,0.72);color: rgb(255,255,255);font-size: 22px;text-align: center;"><strong>The Project will be implemented using Python and Flask.&nbsp; Data will be organized and preprocessed using Python libraries such as NLTK. Once our system determines whether a tweet is good or bad, the final analysis will be represented in graphs/charts.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer style="background-color: black;" class="py-5 bg-black">
+        <div class="container">
+            <p class="text-center text-white m-0 small">Information Retrieval Project</p>
+        </div>
+    </footer>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/templates/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

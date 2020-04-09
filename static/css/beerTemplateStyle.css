@@ -1,0 +1,28 @@
+.top_row {
+	height: 300px;
+	margin: auto;
+}
+
+div {
+  border: 1px solid red;
+}
+
+.second_row {
+	height: 300px;
+	width: 300px;
+}
+
+.content {
+	column-count: 2;
+  	column-gap: 40px;
+}
+
+.creator {
+	height: 300px;
+	width: 300px;
+}
+
+.beerName {
+	height: 300px;
+	width: 300px;
+}
