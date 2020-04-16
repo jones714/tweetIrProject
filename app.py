@@ -9,7 +9,9 @@ app = Flask(__name__)
 
 tweets = tc.search(query="china", since="2001-12-01", limit=10)
 list_tweets = to_list(tweets)
-for tweet in list_tweets:
+json_tweets = to_json(tweets)
+
+for tweet in json_tweets:
     print(tweet)
 
 
