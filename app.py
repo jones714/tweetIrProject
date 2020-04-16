@@ -9,6 +9,8 @@ app = Flask(__name__)
 
 tweets = tc.search(query="china", since="2001-12-01", limit=10)
 list_tweets = to_list(tweets)
+for tweet in list_tweets:
+    print(tweet)
 
 
 @app.route('/')
