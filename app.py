@@ -1,14 +1,14 @@
-from flask import Flask
+
 from flask import Flask, request, render_template, Response, session, redirect, url_for
 
-#from twpy import TwpyClient
-#from twpy.serializers import to_json, to_list
-#tc = TwpyClient()
+from twpy import TwpyClient
+from twpy.serializers import to_json, to_list
+tc = TwpyClient()
 
 app = Flask(__name__)
 
-#tweets = tc.search(query="china", since="2001-12-01", limit=10)
-#list_tweets = to_list(tweets)
+tweets = tc.search(query="china", since="2001-12-01", limit=10)
+list_tweets = to_list(tweets)
 
 
 @app.route('/')
