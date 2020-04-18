@@ -20,6 +20,30 @@ for tweet in json_tweets:
 def main():
     return render_template('main.html')
 
+#Dictonary that stores the {tweet:rating} from the sentiment analysis
+jsontest = {}
+
+#This is a test dictonary if the sentiment returns a dictonary.
+testlist = {'Erik is a really good programmer, lol just kidding':'Positive','Carl is really good at video games':'Positive','Bob really sucks at programing':'Negative','This is a neutral tweet, be yellow please': 'Neutral',
+'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive'}
+
+#This gets a .json from post and returns the data to jsontest that is then used in /tweets
+@app.route("/info", methods = ['GET', 'POST'])
+def index():
+    #value = request.json
+    req_data = request.get_json()
+    the_tweets = list(req_data['Tweets'])
+    while len(the_tweets) != 0:
+        getpair = the_tweets.pop()
+        tweet = getpair.get('tweet')
+        rating = getpair.get('rating')
+        jsontest.update({tweet:rating})
+    print(jsontest)
+    return jsontest
+
+@app.route("/tweets")
+def Tweets():
+    return render_template("index.html",othertest = testlist, bigwholetest = jsontest)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
