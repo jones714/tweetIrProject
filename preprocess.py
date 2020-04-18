@@ -14,6 +14,8 @@ repository = {'china': 'chinaData.json', 'wuhan': 'wuhanData.json', 'covid': 'co
 
 
 tweetIds = []
+
+
 def preprocessData(tweetData):
 	content = {}
 	vocab = Counter()
