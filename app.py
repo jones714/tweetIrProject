@@ -129,36 +129,38 @@ def main(json_tweets):
 
 data = main(json_tweets)
 
-
 @app.route('/')
 @app.route('/main')
-def main():
+def mainpage():
     return render_template('main.html')
 
 #Dictonary that stores the {tweet:rating} from the sentiment analysis
-jsontest = {}
+#jsontest = {}
 
 #This is a test dictonary if the sentiment returns a dictonary.
 testlist = {'Erik is a really good programmer, lol just kidding':'Positive','Carl is really good at video games':'Positive','Bob really sucks at programing':'Negative','This is a neutral tweet, be yellow please': 'Neutral',
 'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive'}
 
-#This gets a .json from post and returns the data to jsontest that is then used in /tweets
-@app.route("/info", methods = ['GET', 'POST'])
-def index():
-    #value = request.json
-    req_data = request.get_json()
-    the_tweets = list(req_data['Tweets'])
-    while len(the_tweets) != 0:
-        getpair = the_tweets.pop()
-        tweet = getpair.get('tweet')
-        rating = getpair.get('rating')
-        jsontest.update({tweet:rating})
-    print(jsontest)
-    return jsontest
+#This gets a .json from post and returns the data to jsontest that is then used in /tweets (Couldnt figure out how to use this so just commented it out)
+#@app.route("/info", methods = ['GET', 'POST'])
+#def index():
+#    #value = request.json
+#    req_data = request.get_json()
+#    the_tweets = list(req_data['Tweets'])
+#    while len(the_tweets) != 0:
+#        getpair = the_tweets.pop()
+#        tweet = getpair.get('tweet')
+#        rating = getpair.get('rating')
+#        jsontest.update({tweet:rating})
+#    print(jsontest)
+#    return jsontest
 
 @app.route("/tweets")
 def Tweets():
-    return render_template("index.html",othertest = testlist, bigwholetest = jsontest)
+    tweets_list  = {}
+    for twt in data:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("index.html", bigwholetest = tweets_list)
 
 @app.route('/graphs')
 def graphs():
