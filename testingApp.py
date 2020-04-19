@@ -158,6 +158,14 @@ def start():
 def Tweets():
     return render_template("index.html",othertest = testlist, bigwholetest = jsontest)
 
+# @app.route('/graphs')
+# def graphs():
+#     # for tweet in json_tweets:
+#     #     dic = {}
+#     #     dic.update[tweet] = tweet
+
+#     listofvalues = list(testlist.values())
+#     return render_template('graphpage.html', testlist = listofvalues)
 
 if __name__ == '__main__':
     main(json_tweets)
