@@ -222,6 +222,10 @@ def graphCV():
     #print(Tlistofvalues)
     return render_template('graphpageCV.html', keys = Tlistofvalues)
 
+@app.route('/discussion')
+def result():
+    return render_template("discussion.html")
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=False)
