@@ -122,18 +122,23 @@ def main(json_tweets):
     # This will give you the negative tweets
 
 
-    return 0
+    return json_tweets
 
 
+data = main(json_tweets)
 
 
+@app.route('/')
+@app.route('/main')
+def start():
+    return render_template('main.html')
 
 #Dictonary that stores the {tweet:rating} from the sentiment analysis
 jsontest = {}
 
 #This is a test dictonary if the sentiment returns a dictonary.
 testlist = {'Erik is a really good programmer, lol just kidding':'Positive','Carl is really good at video games':'Positive','Bob really sucks at programing':'Negative','This is a neutral tweet, be yellow please': 'Neutral',
-'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive'}
+'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive', 'This is a test': 'Neutral'}
 
 #This gets a .json from post and returns the data to jsontest that is then used in /tweets
 @app.route("/info", methods = ['GET', 'POST'])
@@ -149,25 +154,16 @@ def index():
     print(jsontest)
     return jsontest
 
-@app.route("/")
-def start():
-    return render_template('main.html')
-
-
 @app.route("/tweets")
-def Tweets():
+def Tweetss():
     return render_template("index.html",othertest = testlist, bigwholetest = jsontest)
 
-# @app.route('/graphs')
-# def graphs():
-#     # for tweet in json_tweets:
-#     #     dic = {}
-#     #     dic.update[tweet] = tweet
+@app.route('/graphs')
+def graphs():
+    #listofvalues = list(testlist.values())
+    return render_template('graphpage.html')
 
-#     listofvalues = list(testlist.values())
-#     return render_template('graphpage.html', testlist = listofvalues)
 
 if __name__ == '__main__':
-    main(json_tweets)
     app.run(host='127.0.0.1', port=8080, debug=False)
     
