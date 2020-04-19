@@ -1,6 +1,5 @@
-
 from flask import Flask, request, render_template, Response, session, redirect, url_for
-
+import json
 from twpy import TwpyClient
 from twpy.serializers import to_json, to_list
 tc = TwpyClient()
@@ -12,7 +11,7 @@ list_tweets = to_list(tweets)
 json_tweets = to_json(tweets)
 
 for tweet in json_tweets:
-    print(tweet)
+    print(tweet["content"])
 
 
 @app.route('/')
