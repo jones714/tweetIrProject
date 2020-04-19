@@ -10,12 +10,20 @@ tc = TwpyClient()
 
 app = Flask(__name__)
 
-tweets = tc.search(query="china", since="2001-12-01", limit=10)
-list_tweets = to_list(tweets)
-json_tweets = to_json(tweets)
+Chinatweets = tc.search(query="china", since="2001-12-01", limit=100)
+Chinalist_tweets = to_list(Chinatweets)
+Chinajson_tweets = to_json(Chinatweets)
 
-for tweet in json_tweets:
-    print(tweet["content"])
+Wuhantweets = tc.search(query="wuhan", since="2001-12-01", limit=100)
+Wuhanlist_tweets = to_list(Wuhantweets)
+Wuhanjson_tweets = to_json(Wuhantweets)
+
+CVtweets = tc.search(query="coronavirus", since="2001-12-01", limit=100)
+CVlist_tweets = to_list(CVtweets)
+CVjson_tweets = to_json(CVtweets)
+
+#for tweet in json_tweets:
+#    print(tweet["content"])
 
 def main(json_tweets):
 
@@ -40,7 +48,7 @@ def main(json_tweets):
             # create TextBlob object of passed tweet text 
             analysis = TextBlob(self.clean_tweet(tweet)) 
             # set sentiment 
-            if analysis.sentiment.polarity > 0: 
+            if analysis.sentiment.polarity > .4: 
                 return 'Positive'
             elif analysis.sentiment.polarity == 0: 
                 return 'Neutral'
@@ -91,11 +99,11 @@ def main(json_tweets):
     # picking positive tweets from tweets 
     ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'Positive'] 
     # percentage of positive tweets 
-    print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets))) 
+    #print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets))) 
     # picking negative tweets from tweets 
     ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'Negative'] 
     # percentage of negative tweets 
-    print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets))) 
+    #print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets))) 
     # percentage of neutral tweets
     
     count = 0
@@ -103,17 +111,17 @@ def main(json_tweets):
         if twt not in ntweets and twt not in ptweets:
             count+= 1
 
-    print("Neutral tweets percentage: {} % \ ".format(100*(count/len(tweets)))) 
+    #print("Neutral tweets percentage: {} % \ ".format(100*(count/len(tweets)))) 
   
     # printing positive
-    print("\n\nPositive tweets:") 
-    for tweet in ptweets: 
-        print(tweet['text']) 
+    #print("\n\nPositive tweets:") 
+    #for tweet in ptweets: 
+    #    print(tweet['text']) 
   
     # printing negative 
-    print("\n\nNegative tweets:") 
-    for tweet in ntweets: 
-        print(tweet['text'])
+    #print("\n\nNegative tweets:") 
+    #for tweet in ntweets: 
+    #    print(tweet['text'])
 
 
     ## ********* Note *********************************************************
@@ -127,11 +135,13 @@ def main(json_tweets):
     return json_tweets
 
 
-data = main(json_tweets)
+ChinaData = main(Chinajson_tweets)
+WuhanData = main(Wuhanjson_tweets)
+CVData = main(CVjson_tweets)
 
 @app.route('/')
 @app.route('/main')
-def mainpage():
+def main():
     return render_template('main.html')
 
 #Dictonary that stores the {tweet:rating} from the sentiment analysis
@@ -155,24 +165,62 @@ testlist = {'Erik is a really good programmer, lol just kidding':'Positive','Car
 #    print(jsontest)
 #    return jsontest
 
-@app.route("/tweets")
-def Tweets():
+@app.route("/tweetsChina")
+def TweetChina():
     tweets_list  = {}
-    for twt in data:
+    for twt in ChinaData:
         tweets_list.update({twt['content']:twt['sentiment']})
-    return render_template("index.html", bigwholetest = tweets_list)
+    return render_template("ChinaIndex.html", bigwholetest = tweets_list)
 
-@app.route('/graphs')
-def graphs():
+@app.route("/tweetsWuhan")
+def TweetWuhan():
+    tweets_list  = {}
+    for twt in WuhanData:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("WuhanIndex.html", bigwholetest = tweets_list)
+
+@app.route("/tweetsCV")
+def TweetCV():
+    tweets_list  = {}
+    for twt in CVData:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("CVIndex.html", bigwholetest = tweets_list)
+
+@app.route('/graphsChina')
+def graphChina():
     testData = {}
-    for twt in data:
-        print(twt['sentiment'])
+    for twt in ChinaData:
+        #print(twt['sentiment'])
         testData[twt['content']] = twt['sentiment']
 
     listofvalues = list(testlist.values())
     Tlistofvalues = list(testData.values())
-    print(Tlistofvalues)
-    return render_template('graphpage.html', keys = Tlistofvalues)
+    #print(Tlistofvalues)
+    return render_template('graphpageChina.html', keys = Tlistofvalues)
+
+@app.route('/graphsWuhan')
+def graphWuhan():
+    testData = {}
+    for twt in WuhanData:
+        #print(twt['sentiment'])
+        testData[twt['content']] = twt['sentiment']
+
+    listofvalues = list(testlist.values())
+    Tlistofvalues = list(testData.values())
+    #print(Tlistofvalues)
+    return render_template('graphpageWuhan.html', keys = Tlistofvalues)
+
+@app.route('/graphsCV')
+def graphCV():
+    testData = {}
+    for twt in CVData:
+        #print(twt['sentiment'])
+        testData[twt['content']] = twt['sentiment']
+
+    listofvalues = list(testlist.values())
+    Tlistofvalues = list(testData.values())
+    #print(Tlistofvalues)
+    return render_template('graphpageCV.html', keys = Tlistofvalues)
 
 
 if __name__ == '__main__':

@@ -1,18 +1,25 @@
 from flask import Flask, request, render_template, Response, session, redirect, url_for
+import json
 from twpy import TwpyClient
 from twpy.serializers import to_json, to_list
 import re 
 import tweepy 
 from tweepy import OAuthHandler 
 from textblob import TextBlob 
-
+from preprocess import preprocessData
 
 tc = TwpyClient()
+
 app = Flask(__name__)
 
-tweets = tc.search(query="corona", since="2001-12-01", limit=10)
+tweets = tc.search(query="china", since="2001-12-01", limit=10)
 list_tweets = to_list(tweets)
 json_tweets = to_json(tweets)
+
+for tweet in json_tweets:
+    print(tweet["content"])
+
+preprocessData(json_tweets)
 
 
 def main(json_tweets):
@@ -39,11 +46,11 @@ def main(json_tweets):
             analysis = TextBlob(self.clean_tweet(tweet)) 
             # set sentiment 
             if analysis.sentiment.polarity > 0: 
-                return 'positive'
+                return 'Positive'
             elif analysis.sentiment.polarity == 0: 
-                return 'neutral'
+                return 'Neutral'
             else: 
-                return 'negative'
+                return 'Negative'
     
         def get_tweets(self, twitter): 
             ''' 
@@ -87,11 +94,11 @@ def main(json_tweets):
     tweets = api.get_tweets(twitter=json_tweets) 
 
     # picking positive tweets from tweets 
-    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'positive'] 
+    ptweets = [tweet for tweet in tweets if tweet['sentiment'] == 'Positive'] 
     # percentage of positive tweets 
     print("Positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets))) 
     # picking negative tweets from tweets 
-    ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'negative'] 
+    ntweets = [tweet for tweet in tweets if tweet['sentiment'] == 'Negative'] 
     # percentage of negative tweets 
     print("Negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets))) 
     # percentage of neutral tweets
@@ -130,7 +137,7 @@ data = main(json_tweets)
 
 @app.route('/')
 @app.route('/main')
-def start():
+def main():
     return render_template('main.html')
 
 #Dictonary that stores the {tweet:rating} from the sentiment analysis
@@ -138,7 +145,7 @@ jsontest = {}
 
 #This is a test dictonary if the sentiment returns a dictonary.
 testlist = {'Erik is a really good programmer, lol just kidding':'Positive','Carl is really good at video games':'Positive','Bob really sucks at programing':'Negative','This is a neutral tweet, be yellow please': 'Neutral',
-'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive', 'This is a test': 'Neutral'}
+'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD' : 'Positive'}
 
 #This gets a .json from post and returns the data to jsontest that is then used in /tweets
 @app.route("/info", methods = ['GET', 'POST'])
@@ -155,15 +162,21 @@ def index():
     return jsontest
 
 @app.route("/tweets")
-def Tweetss():
+def Tweets():
     return render_template("index.html",othertest = testlist, bigwholetest = jsontest)
 
 @app.route('/graphs')
 def graphs():
-    #listofvalues = list(testlist.values())
-    return render_template('graphpage.html')
+    testData = {}
+    for twt in data:
+        print(twt['sentiment'])
+        testData[twt['content']] = twt['sentiment']
+
+    listofvalues = list(testlist.values())
+    Tlistofvalues = list(testData.values())
+    print(Tlistofvalues)
+    return render_template('graphpage.html', keys = Tlistofvalues)
 
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=False)
-    
