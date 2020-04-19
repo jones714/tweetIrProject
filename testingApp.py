@@ -10,7 +10,7 @@ from textblob import TextBlob
 tc = TwpyClient()
 app = Flask(__name__)
 
-tweets = tc.search(query="corona", since="2001-12-01", limit=100)
+tweets = tc.search(query="corona", since="2001-12-01", limit=10)
 list_tweets = to_list(tweets)
 json_tweets = to_json(tweets)
 
@@ -103,12 +103,12 @@ def main(json_tweets):
 
     print("Neutral tweets percentage: {} % \ ".format(100*(count/len(tweets)))) 
   
-    # printing first 5 positive tweets 
+    # printing positive
     print("\n\nPositive tweets:") 
     for tweet in ptweets: 
         print(tweet['text']) 
   
-    # printing first 5 negative tweets 
+    # printing negative 
     print("\n\nNegative tweets:") 
     for tweet in ntweets: 
         print(tweet['text'])
