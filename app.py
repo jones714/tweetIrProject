@@ -6,26 +6,45 @@ import re
 import tweepy 
 from tweepy import OAuthHandler 
 from textblob import TextBlob 
+
+import nltk
+nltk.download('punkt')
+nltk.download('words')
+SENT_DETECTOR = nltk.data.load('tokenizers/punkt/english.pickle')
+from nltk.tokenize import word_tokenize
+
 tc = TwpyClient()
 
 app = Flask(__name__)
 
-Chinatweets = tc.search(query="china", since="2001-12-01", limit=100)
-Chinalist_tweets = to_list(Chinatweets)
-Chinajson_tweets = to_json(Chinatweets)
+Chinajson_tweetsC = []
+with open('FinalChinaDataClean.txt') as json_file:
+    Chinajson_tweetsC = json.load(json_file)
 
-Wuhantweets = tc.search(query="wuhan", since="2001-12-01", limit=100)
-Wuhanlist_tweets = to_list(Wuhantweets)
-Wuhanjson_tweets = to_json(Wuhantweets)
+Chinajson_tweets = []
+with open('FinalChinaData.txt') as json_file:
+    Chinajson_tweets = json.load(json_file)
 
-CVtweets = tc.search(query="coronavirus", since="2001-12-01", limit=100)
-CVlist_tweets = to_list(CVtweets)
-CVjson_tweets = to_json(CVtweets)
+Wuhanjson_tweets = []
+with open('FinalWuhanData.txt') as json_file:
+    Wuhanjson_tweets = json.load(json_file)
+
+Wuhanjson_tweetsC = []
+with open('FinalWuhanDataClean.txt') as json_file:
+    Wuhanjson_tweetsC = json.load(json_file)
+
+CVjson_tweets = []
+with open('FinalCVData.txt') as json_file:
+    CVjson_tweets = json.load(json_file)
+
+CVjson_tweetsC = []
+with open('FinalCVDataClean.txt') as json_file:
+    CVjson_tweetsC = json.load(json_file)
 
 #for tweet in json_tweets:
 #    print(tweet["content"])
-
-def main(json_tweets):
+words = set(nltk.corpus.words.words())
+def main(json_tweets, ctrl):
 
     class TwitterClient(object): 
         ''' 
@@ -38,7 +57,27 @@ def main(json_tweets):
             Utility function to clean tweet text by removing links, special characters 
             using simple regex statements. 
             '''
-            return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split()) 
+            #remove all links
+            link = ' '.join(re.sub(r'''(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))''', " ", tweet).split())
+            
+            #remove non english words based on corpus
+            eng = " ".join(w for w in nltk.wordpunct_tokenize(link) if w.lower() in words or not w.isalpha()) 
+
+            #remove special characters
+            return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", eng).split())
+
+        def strip_tweet(self, tweet): 
+            ''' 
+            Utility function to clean tweet text by removing links, special characters 
+            using simple regex statements. 
+            '''
+            stop_words = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
+
+            tweet_without_sc = ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+            tweet_tokens = word_tokenize(tweet_without_sc)
+            tweets_without_sw = [word for word in tweet_tokens if not word in stop_words]
+
+            return ''.join(tweets_without_sw)
     
         def get_tweet_sentiment(self, tweet): 
             ''' 
@@ -46,7 +85,8 @@ def main(json_tweets):
             using textblob's sentiment method 
             '''
             # create TextBlob object of passed tweet text 
-            analysis = TextBlob(self.clean_tweet(tweet)) 
+            analysis = TextBlob(self.clean_tweet(tweet))
+
             # set sentiment 
             if analysis.sentiment.polarity > .4: 
                 return 'Positive'
@@ -68,7 +108,10 @@ def main(json_tweets):
                 for tweet in twitter: 
                     # empty dictionary to store required params of a tweet 
                     parsed_tweet = {} 
-    
+                    
+                    if ctrl == 1:
+                        tweet['content'] = self.clean_tweet(tweet['content'])
+
                     # saving text of tweet 
                     parsed_tweet["text"] = tweet['content']
                     # saving sentiment of tweet 
@@ -135,9 +178,13 @@ def main(json_tweets):
     return json_tweets
 
 
-ChinaData = main(Chinajson_tweets)
-WuhanData = main(Wuhanjson_tweets)
-CVData = main(CVjson_tweets)
+ChinaData = main(Chinajson_tweets, 0)
+WuhanData = main(Wuhanjson_tweets, 0)
+CVData = main(CVjson_tweets, 0)
+
+ChinaDataClean = main(Chinajson_tweetsC, 1)
+WuhanDataClean = main(Wuhanjson_tweetsC, 1)
+CVDataClean = main(CVjson_tweetsC, 1)
 
 @app.route('/')
 @app.route('/main')
@@ -185,6 +232,27 @@ def TweetCV():
     for twt in CVData:
         tweets_list.update({twt['content']:twt['sentiment']})
     return render_template("CVIndex.html", bigwholetest = tweets_list)
+
+@app.route("/tweetsChinaClean")
+def TweetChinaC():
+    tweets_list  = {}
+    for twt in ChinaDataClean:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("ChinaIndexClean.html", bigwholetest = tweets_list)
+
+@app.route("/tweetsWuhanClean")
+def TweetWuhanC():
+    tweets_list  = {}
+    for twt in WuhanDataClean:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("WuhanIndexClean.html", bigwholetest = tweets_list)
+
+@app.route("/tweetsCVClean")
+def TweetCVC():
+    tweets_list  = {}
+    for twt in CVDataClean:
+        tweets_list.update({twt['content']:twt['sentiment']})
+    return render_template("CVIndexClean.html", bigwholetest = tweets_list)
 
 @app.route('/graphsChina')
 def graphChina():
