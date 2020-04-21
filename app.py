@@ -12,10 +12,49 @@ nltk.download('punkt')
 nltk.download('words')
 SENT_DETECTOR = nltk.data.load('tokenizers/punkt/english.pickle')
 from nltk.tokenize import word_tokenize
+from textblob.classifiers import NaiveBayesClassifier
 
 tc = TwpyClient()
 
 app = Flask(__name__)
+
+
+train = [
+('I love China!', 'pos'),
+('China is helping people', 'pos'),
+('I feel very good about Wuhan', 'pos'),
+('This Corona pandemic is looking up', 'pos'),
+("Don't blame China", 'pos'),
+('I do not like China', 'neg'),
+('I am tired of this pandemic', 'neg'),
+("who's to blame, oh wait its china", 'neg'),
+('Corona virus was created in china', 'neg'),
+('Wuhan is responsible', 'neg')
+]
+
+ChinaAccuracy = {
+    "TP": 0,
+    "TN": 0,
+    "FP": 0,
+    "FN": 0
+}
+
+WuhanAccuracy = {
+    "TP": 0,
+    "TN": 0,
+    "FP": 0,
+    "FN": 0
+}
+
+CVAccuracy = {
+    "TP": 0,
+    "TN": 0,
+    "FP": 0,
+    "FN": 0
+}
+
+
+cl = NaiveBayesClassifier(train)
 
 Chinajson_tweetsC = []
 with open('FinalChinaDataClean.txt') as json_file:
@@ -44,7 +83,7 @@ with open('FinalCVDataClean.txt') as json_file:
 #for tweet in json_tweets:
 #    print(tweet["content"])
 words = set(nltk.corpus.words.words())
-def main(json_tweets, ctrl):
+def main(json_tweets, ctrl, acc):
 
     class TwitterClient(object): 
         ''' 
@@ -106,6 +145,10 @@ def main(json_tweets, ctrl):
 
                 # parsing tweets one by one 
                 for tweet in twitter: 
+
+                    #Gets sentiment based on test
+                    testSentiment = cl.classify(tweet['content'])
+
                     # empty dictionary to store required params of a tweet 
                     parsed_tweet = {} 
                     
@@ -117,7 +160,18 @@ def main(json_tweets, ctrl):
                     # saving sentiment of tweet 
                     parsed_tweet["sentiment"] = self.get_tweet_sentiment(tweet['content']) 
                     tweet["sentiment"] = parsed_tweet["sentiment"]
-    
+
+                    if acc != 0:
+                        #Update Accuracy
+                        if testSentiment == 'pos' and tweet["sentiment"] == "Positive":
+                            acc["TP"] +=1
+                        if testSentiment == 'pos' and tweet["sentiment"] == "Negative":
+                            acc["FP"] +=1
+                        if testSentiment == 'neg' and tweet["sentiment"] == "Positive":
+                            acc["FN"] +=1
+                        if testSentiment == 'neg' and tweet["sentiment"] == "Negative":
+                            acc["TN"] +=1    
+
                     # appending parsed tweet to tweets list 
                     if int(tweet['retweet_count']) > 0: 
                         # if tweet has retweets, ensure that it is appended only once 
@@ -178,13 +232,16 @@ def main(json_tweets, ctrl):
     return json_tweets
 
 
-ChinaData = main(Chinajson_tweets, 0)
-WuhanData = main(Wuhanjson_tweets, 0)
-CVData = main(CVjson_tweets, 0)
+ChinaData = main(Chinajson_tweets, 0, ChinaAccuracy)
+WuhanData = main(Wuhanjson_tweets, 0, WuhanAccuracy)
+CVData = main(CVjson_tweets, 0, CVAccuracy)
 
-ChinaDataClean = main(Chinajson_tweetsC, 1)
-WuhanDataClean = main(Wuhanjson_tweetsC, 1)
-CVDataClean = main(CVjson_tweetsC, 1)
+ChinaDataClean = main(Chinajson_tweetsC, 1, 0)
+WuhanDataClean = main(Wuhanjson_tweetsC, 1, 0)
+CVDataClean = main(CVjson_tweetsC, 1, 0)
+
+
+#print(WuhanAccuracy["TP"])
 
 @app.route('/')
 @app.route('/main')

@@ -40,7 +40,7 @@
                 <div class="col-lg-6 order-lg-1">
                     <div class="p-5">
                         <h2 class="display-4" style="margin: auto;color: rgb(255,255,255);text-align: center;">&nbsp;Problems We Faced</h2>
-                        <p style="background-color: rgba(0,0,0,0.72);color: #ffffff;font-size: 22px;text-align: center;"><strong>We weren't able to receive a Twitter API Key in a timely matter which resulted in the usage of the Twpy library. Twpy allowed us to gather tweets based on a query search that we used for our project. If we were able to use the Twitter API Key instead we would have access to better data.</strong></p>
+                        <p style="background-color: rgba(0,0,0,0.72);color: #ffffff;font-size: 22px;text-align: center;"><strong>The Twitter API Key was not able to be retrieved in a timely matter. This resulted in the use of the Tweepy libraries. When pulling our data we had to create an algorithm that would allow our Tweepy client to refuse duplicate tweets and ignore retweets of the same tweet.</strong></p>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,38 @@
                 <div class="col-lg-6 order-lg-2">
                     <div class="p-5">
                         <h2 class="display-4" style="text-align: center; width: 472px;color: rgb(255,255,255);">Accuracy</h2>
-                        <p style="color: rgb(255,255,255);background-color: rgba(0,0,0,0.72);font-size: 22px;text-align: center;"><strong>As mentioned, the data collected from twitter was collected using Twpy. When we call twpy it only grabs a subset of tweets from an overall pool of tweets, so each time you run the anaylsis it will result with different data. Given this it is not possible to calculate Precision/Recall and Accuracy if we can not count our True Positives/True Negatives etc. Through the mind of a person one can tell the sentiment analysis has yet to understand sarcasm as it usually counts it as neutral or mistakeningly positive or negative.</strong></p>
+                        <p style="color: rgb(255, 255, 255);background-color: rgba(0, 0, 0, 0.72);font-size: 22px;text-align: center;"><strong>
+
+                            Precision = TruePositives / (TruePositives + FalsePositives)<br>
+                            Recall = TruePositives / (TruePositives + FalseNegatives)
+                            <br>
+                            China Accuracy
+                            <br>
+                            TP = 9<br>
+                            TN = 39<br>
+                            FP = 40<br>
+                            FN = 6<br>
+                            Precision = 9 / (9 + 40) = .18<br>
+                            Recall = 9 / (9 + 6) = .6<br>
+                            <br>
+                            Wuhan Accuracy
+                            <br>
+                            TP = 8<br>
+                            TN = 46<br>
+                            FP = 38<br>
+                            FN = 3<br>
+                            Precision = 8 / (8 + 38) = .17<br>
+                            Recall = 8 / (8 + 3) = .73<br>
+                            <br>
+                            Corona Virus Accuracy
+                            <br>
+                            TP = 8<br>
+                            TN = 41<br>
+                            FP = 46<br>
+                            FN = 7<br>
+                            Precision = 8 / (8 + 46) = .15<br>
+                            Recall = 8 / (8 + 7) = .53
+                        </strong></p>
                     </div>
                 </div>
             </div>
@@ -70,7 +101,7 @@
                 <div class="col-lg-6 order-lg-1">
                     <div class="p-5">
                         <h2 class="display-4" style="text-align: center; color: rgb(255,255,255);">Future Optimizations</h2>
-                        <p style="background-color: rgba(0,0,0,0.72);color: rgb(255,255,255);font-size: 22px;text-align: center;"><strong>Once receiving an API Key the program will have stronger data to come up with a stronger analysis. In the future the project could implement filters to make sure the tweets are better quality and only look for tweets that aren't just pictures. Machine learning is also a good future optimization as it will allow the analysis to better understand human sarcasm.</strong></p>
+                        <p style="background-color: rgba(0,0,0,0.72);color: rgb(255,255,255);font-size: 22px;text-align: center;"><strong>Once receiving an API Key the program will have stronger data to come up with a stronger analysis. In the future the project could implement more filters to make sure the tweets are better quality and only look for tweets that aren't just pictures. It could even implement some sort of analysis that includes the context of a photo in the overall analysis. The test data can be stronger to make the sentiment analysis more accurate. Machine learning is also a good future optimization as it will allow the analysis to better understand human sarcasm.</strong></p>
                     </div>
                 </div>
             </div>
